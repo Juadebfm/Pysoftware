@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const menuItems = [
-  { id: "1", menu_item: "Home", href: "/" },
+  { id: "1", menu_item: "Address", href: "/" },
   { id: "2", menu_item: "Student", href: "/students" },
   { id: "3", menu_item: "Login", href: "/login" },
   { id: "4", menu_item: "Tutor", href: "/tutor" },

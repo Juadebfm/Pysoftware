@@ -12,6 +12,7 @@ import SignUpContent from "./pages/SignUpContent";
 import ContactContent from "./pages/ContactContent";
 import HelpContent from "./pages/HelpContent";
 import AboutContent from "./pages/AboutContent";
+import { AddressProvider } from "./context/AddressContext";
 
 const Layout = ({ children }) => {
   return (
@@ -30,82 +31,84 @@ const Layout = ({ children }) => {
 const App = () => {
   return (
     <Router>
-      <MenuProvider>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Layout>
-                <DashboardContent />
-              </Layout>
-            }
-          />
-          <Route
-            path="/students"
-            element={
-              <Layout>
-                <StudentsContent />
-              </Layout>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <Layout>
-                <LoginContent />
-              </Layout>
-            }
-          />
-          <Route
-            path="/price_list"
-            element={
-              <Layout>
-                <PriceContent />
-              </Layout>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <Layout>
-                <SignUpContent />
-              </Layout>
-            }
-          />
-          <Route
-            path="/contact"
-            element={
-              <Layout>
-                <ContactContent />
-              </Layout>
-            }
-          />
-          <Route
-            path="/help"
-            element={
-              <Layout>
-                <HelpContent />
-              </Layout>
-            }
-          />
-          <Route
-            path="/tutor"
-            element={
-              <Layout>
-                <TutorContent />
-              </Layout>
-            }
-          />
-          <Route
-            path="/about"
-            element={
-              <Layout>
-                <AboutContent />
-              </Layout>
-            }
-          />
-        </Routes>
-      </MenuProvider>
+      <AddressProvider>
+        <MenuProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Layout>
+                  <DashboardContent />
+                </Layout>
+              }
+            />
+            <Route
+              path="/students"
+              element={
+                <Layout>
+                  <StudentsContent />
+                </Layout>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <Layout>
+                  <LoginContent />
+                </Layout>
+              }
+            />
+            <Route
+              path="/price_list"
+              element={
+                <Layout>
+                  <PriceContent />
+                </Layout>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <Layout>
+                  <SignUpContent />
+                </Layout>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <Layout>
+                  <ContactContent />
+                </Layout>
+              }
+            />
+            <Route
+              path="/help"
+              element={
+                <Layout>
+                  <HelpContent />
+                </Layout>
+              }
+            />
+            <Route
+              path="/tutor"
+              element={
+                <Layout>
+                  <TutorContent />
+                </Layout>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <Layout>
+                  <AboutContent />
+                </Layout>
+              }
+            />
+          </Routes>
+        </MenuProvider>
+      </AddressProvider>
     </Router>
   );
 };
