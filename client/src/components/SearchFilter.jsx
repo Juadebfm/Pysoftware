@@ -12,10 +12,11 @@ const SearchFilter = () => {
     <div className="max-w-[500px]">
       <input
         type="text"
-        placeholder="Search by name, street, state, etc."
+        placeholder="Search by name, street, state, customer number, etc."
         value={searchQuery}
-        onChange={handleInputChange}
-        className="border border-gray-300 rounded p-2 w-full mb-5 placeholder:"
+        onChange={(e) => setSearchQuery(e.target.value.trim())}
+        className="border border-gray-300 rounded p-2 w-full mb-5"
+        pattern="[a-zA-Z0-9\s]*"
       />
     </div>
   );

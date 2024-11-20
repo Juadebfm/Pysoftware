@@ -36,23 +36,44 @@ export const AddressProvider = ({ children }) => {
     fetchAddresses();
   }, []);
 
-  // Filter addresses based on the search query
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredAddresses(addresses);
     } else {
-      const lowerCaseQuery = searchQuery.toLowerCase();
-      const filtered = addresses.filter((address) =>
-        Object.values(address).some(
-          (value) =>
-            value && value.toString().toLowerCase().includes(lowerCaseQuery)
-        )
-      );
+      const isNumeric = !isNaN(searchQuery);
+
+      const filtered = addresses.filter((address) => {
+        if (isNumeric) {
+          return (
+            address.customer_number !== undefined &&
+            searchQuery === address.customer_number.toString()
+          );
+        }
+
+        const matchesTextFields = [
+          "first_name",
+          "last_name",
+          "street",
+          "postcode",
+          "state",
+          "country",
+          "phone",
+        ].some(
+          (field) =>
+            address[field] &&
+            address[field]
+              .toString()
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())
+        );
+
+        return matchesTextFields;
+      });
+
       setFilteredAddresses(filtered);
     }
   }, [searchQuery, addresses]);
 
-  // Paginate the filtered addresses
   useEffect(() => {
     const startIndex = (currentPage - 1) * recordsPerPage;
     const endIndex = startIndex + recordsPerPage;
@@ -148,11 +169,17 @@ export const AddressProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    // Reset to first page when filtered results change
+    setCurrentPage(1);
+  }, [filteredAddresses]);
+
   return (
     <AddressContext.Provider
       value={{
         addresses,
         paginatedAddresses,
+        filteredAddresses,
         currentPage,
         recordsPerPage,
         totalPages: Math.ceil(filteredAddresses.length / recordsPerPage),
@@ -163,8 +190,8 @@ export const AddressProvider = ({ children }) => {
         setPage,
         searchQuery,
         setSearchQuery,
-        editAddress, // Expose edit functionality
-        deleteAddress, // Expose delete functionality
+        editAddress,
+        deleteAddress,
       }}
     >
       {children}

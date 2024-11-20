@@ -13,17 +13,16 @@ import ContactContent from "./pages/ContactContent";
 import HelpContent from "./pages/HelpContent";
 import AboutContent from "./pages/AboutContent";
 import { AddressProvider } from "./context/AddressContext";
+import { SidebarProvider } from "./context/SidebarContext";
 
 const Layout = ({ children }) => {
   return (
-    <div className="h-screen flex font-hg">
+    <div className="h-screen flex flex-col md:flex-row font-hg overflow-hidden">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+      <main className="flex-1 overflow-y-auto bg-gray-50">
         <Navbar />
-        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
-          {children}
-        </main>
-      </div>
+        <div className="p-6">{children}</div>
+      </main>
     </div>
   );
 };
@@ -31,84 +30,86 @@ const Layout = ({ children }) => {
 const App = () => {
   return (
     <Router>
-      <AddressProvider>
-        <MenuProvider>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Layout>
-                  <DashboardContent />
-                </Layout>
-              }
-            />
-            <Route
-              path="/students"
-              element={
-                <Layout>
-                  <StudentsContent />
-                </Layout>
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <Layout>
-                  <LoginContent />
-                </Layout>
-              }
-            />
-            <Route
-              path="/price_list"
-              element={
-                <Layout>
-                  <PriceContent />
-                </Layout>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <Layout>
-                  <SignUpContent />
-                </Layout>
-              }
-            />
-            <Route
-              path="/contact"
-              element={
-                <Layout>
-                  <ContactContent />
-                </Layout>
-              }
-            />
-            <Route
-              path="/help"
-              element={
-                <Layout>
-                  <HelpContent />
-                </Layout>
-              }
-            />
-            <Route
-              path="/tutor"
-              element={
-                <Layout>
-                  <TutorContent />
-                </Layout>
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                <Layout>
-                  <AboutContent />
-                </Layout>
-              }
-            />
-          </Routes>
-        </MenuProvider>
-      </AddressProvider>
+      <SidebarProvider>
+        <AddressProvider>
+          <MenuProvider>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Layout>
+                    <DashboardContent />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/students"
+                element={
+                  <Layout>
+                    <StudentsContent />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <Layout>
+                    <LoginContent />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/price_list"
+                element={
+                  <Layout>
+                    <PriceContent />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <Layout>
+                    <SignUpContent />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <Layout>
+                    <ContactContent />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/help"
+                element={
+                  <Layout>
+                    <HelpContent />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/tutor"
+                element={
+                  <Layout>
+                    <TutorContent />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <Layout>
+                    <AboutContent />
+                  </Layout>
+                }
+              />
+            </Routes>
+          </MenuProvider>
+        </AddressProvider>
+      </SidebarProvider>
     </Router>
   );
 };
