@@ -1,35 +1,48 @@
-require("dotenv").config(); // Load environment variables
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
-const validateApiKey = require("./middleware/auth");
-const app = express();
-
-// Apply globally
-app.use(validateApiKey);
-
 // Import Routes
 const addressRoutes = require("./routes/address");
 const menuRoutes = require("./routes/menu");
 
+const validateApiKey = require("./middleware/auth");
+const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
+    credentials: true,
+  })
+);
+
+app.use(bodyParser.json());
+
+// Public routes (no API key required)
+app.use("/api/menu", menuRoutes);
+
+// Protected routes (API key required)
+app.use("/api/addresses", validateApiKey, addressRoutes);
+
+// Body parser
+app.use(bodyParser.json());
+
+app.use("/api", validateApiKey);
+
+// Routes
+app.use("/api/addresses", addressRoutes);
 app.use("/api", menuRoutes);
 
 const PORT = process.env.PORT || 3000;
-
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
 
 // Database Configuration
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
-
-// Routes
-app.use("/api/addresses", addressRoutes);
 
 // Start the Server
 app.listen(PORT, () =>
