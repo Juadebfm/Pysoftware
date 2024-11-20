@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/flowbite/**/*.js",
+  ],
   theme: {
     extend: {
       colors: {
@@ -9,7 +13,10 @@ export default {
         dark_text: "#232323",
         accent_color: "#F89A20",
       },
+      fontFamily: {
+        hg: ["Host Grotesk", "sans-serif"],
+      },
     },
   },
-  plugins: [],
+  plugins: [require("flowbite/plugin")],
 };

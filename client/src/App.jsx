@@ -16,7 +16,7 @@ import { AddressProvider } from "./context/AddressContext";
 
 const Layout = ({ children }) => {
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex font-hg">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Navbar />
