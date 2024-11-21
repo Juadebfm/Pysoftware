@@ -11,13 +11,16 @@ export const MenuProvider = ({ children }) => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/menu", {
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": import.meta.env.VITE_API_KEY, // Make sure to create a .env file with this
-          },
-          credentials: "include",
-        });
+        const response = await fetch(
+          "https://py-software-frontend.vercel.app/api/menu",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": import.meta.env.VITE_API_KEY, // Make sure to create a .env file with this
+            },
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Failed to fetch menu items: ${response.status}`);
