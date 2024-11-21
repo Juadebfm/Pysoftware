@@ -14,7 +14,7 @@ const menuItems = [
   { id: "9", menu_item: "About", href: "/about" },
 ];
 
-router.get("/menu", (req, res) => {
+router.get("/", (req, res) => {
   res.json(menuItems);
 });
 
