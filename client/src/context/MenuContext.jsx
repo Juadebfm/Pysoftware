@@ -12,7 +12,7 @@ export const MenuProvider = ({ children }) => {
     const fetchMenuItems = async () => {
       try {
         const response = await fetch(
-          "https://py-software-frontend.vercel.app/api/menu",
+          "https://py-software-backend.vercel.app/api/menu",
           {
             headers: {
               "Content-Type": "application/json",
