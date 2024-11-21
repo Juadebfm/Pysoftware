@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 export const AddressContext = createContext();
 
@@ -12,6 +13,36 @@ export const AddressProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredAddresses, setFilteredAddresses] = useState([]);
 
+  const handleError = (errorResponse) => {
+    if (errorResponse.error) {
+      // Check if there are validation error details
+      if (
+        errorResponse.message === "Validation Error" &&
+        errorResponse.details
+      ) {
+        // For validation errors, show each detail's message
+        errorResponse.details.forEach((detail) => {
+          toast.error(detail.message, {
+            position: "top-right",
+            duration: 4000,
+          });
+        });
+      } else {
+        // For other error types, use the main message
+        toast.error(errorResponse.message, {
+          position: "top-right",
+          duration: 4000,
+        });
+      }
+    } else {
+      // Fallback for unexpected error format
+      toast.error("An unexpected error occurred", {
+        position: "top-right",
+        duration: 4000,
+      });
+    }
+  };
+
   useEffect(() => {
     const fetchAddresses = async () => {
       setLoading(true);
@@ -24,10 +55,20 @@ export const AddressProvider = ({ children }) => {
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-        const data = await response.json();
-        setAddresses(data);
+        const responseData = await response.json();
+
+        console.log("Full API Response:", responseData);
+        console.log("Addresses from API:", responseData.data);
+
+        // Specifically set addresses to the data array
+        const fetchedAddresses = responseData.data || [];
+        setAddresses(fetchedAddresses);
+        setFilteredAddresses(fetchedAddresses);
       } catch (err) {
+        console.error("Fetch Error:", err);
         setError(err.message);
+        setAddresses([]);
+        setFilteredAddresses([]);
       } finally {
         setLoading(false);
       }
@@ -37,12 +78,25 @@ export const AddressProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredAddresses(addresses);
-    } else {
+    console.log("Filtered Addresses:", filteredAddresses);
+
+    const startIndex = (currentPage - 1) * recordsPerPage;
+    const endIndex = startIndex + recordsPerPage;
+
+    const paginated = filteredAddresses.slice(startIndex, endIndex);
+
+    console.log("Paginated Addresses:", paginated);
+
+    setPaginatedAddresses(paginated);
+  }, [filteredAddresses, currentPage, recordsPerPage]);
+
+  useEffect(() => {
+    let filtered = addresses; // Default to all addresses
+
+    if (searchQuery.trim() !== "") {
       const isNumeric = !isNaN(searchQuery);
 
-      const filtered = addresses.filter((address) => {
+      filtered = addresses.filter((address) => {
         if (isNumeric) {
           return (
             address.customer_number !== undefined &&
@@ -69,19 +123,26 @@ export const AddressProvider = ({ children }) => {
 
         return matchesTextFields;
       });
-
-      setFilteredAddresses(filtered);
     }
+
+    setFilteredAddresses(filtered || []); // Ensure filtered is an array
   }, [searchQuery, addresses]);
 
   useEffect(() => {
     const startIndex = (currentPage - 1) * recordsPerPage;
     const endIndex = startIndex + recordsPerPage;
-    setPaginatedAddresses(filteredAddresses.slice(startIndex, endIndex));
+
+    // Add extra safety check
+    setPaginatedAddresses(
+      Array.isArray(filteredAddresses)
+        ? filteredAddresses.slice(startIndex, endIndex)
+        : []
+    );
   }, [filteredAddresses, currentPage, recordsPerPage]);
 
   const nextPage = () => {
-    if (currentPage < Math.ceil(filteredAddresses.length / recordsPerPage)) {
+    const maxPages = Math.ceil(filteredAddresses.length / recordsPerPage);
+    if (currentPage < maxPages) {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
@@ -95,13 +156,12 @@ export const AddressProvider = ({ children }) => {
   const setPage = (page) => {
     if (
       page >= 1 &&
-      page <= Math.ceil(filteredAddresses.length / recordsPerPage)
+      page <= Math.ceil((filteredAddresses?.length || 0) / recordsPerPage)
     ) {
       setCurrentPage(page);
     }
   };
 
-  // Edit Address Functionality
   const editAddress = async (userId, updatedData) => {
     setLoading(true);
     try {
@@ -121,6 +181,11 @@ export const AddressProvider = ({ children }) => {
         throw new Error(`Error: ${response.statusText}`);
       }
 
+      toast.success("Address updated successfully!", {
+        position: "top-right",
+        duration: 4000,
+      });
+
       // Refresh the data
       const updatedAddresses = await fetch(
         "http://localhost:3000/api/addresses",
@@ -129,15 +194,14 @@ export const AddressProvider = ({ children }) => {
         }
       );
       const data = await updatedAddresses.json();
-      setAddresses(data);
+      setAddresses(data.data);
     } catch (err) {
-      setError(err.message);
+      handleError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Delete Address Functionality
   const deleteAddress = async (userId) => {
     setLoading(true);
     try {
@@ -153,6 +217,52 @@ export const AddressProvider = ({ children }) => {
         throw new Error(`Error: ${response.statusText}`);
       }
 
+      toast.success("Address deleted successfully!", {
+        position: "top-right",
+        duration: 4000,
+      });
+
+      // Remove the deleted address from filteredAddresses
+      setFilteredAddresses(
+        filteredAddresses.filter((address) => address._id !== userId)
+      );
+
+      // Adjust pagination if needed
+      const maxPages = Math.ceil(filteredAddresses.length / recordsPerPage);
+      if (currentPage > maxPages) {
+        setCurrentPage(maxPages); // Move to the last valid page
+      }
+    } catch (err) {
+      handleError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addAddress = async (newAddressData) => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:3000/api/addresses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": import.meta.env.VITE_API_KEY,
+        },
+        body: JSON.stringify(newAddressData),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        // Pass the entire error response to handleError
+        throw responseData;
+      }
+
+      toast.success("Address added successfully!", {
+        position: "top-right",
+        duration: 4000,
+      });
+
       // Refresh the data
       const updatedAddresses = await fetch(
         "http://localhost:3000/api/addresses",
@@ -161,22 +271,23 @@ export const AddressProvider = ({ children }) => {
         }
       );
       const data = await updatedAddresses.json();
-      setAddresses(data);
+      setAddresses(data.data);
     } catch (err) {
-      setError(err.message);
+      // Use the new handleError method
+      handleError(err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Reset to first page when filtered results change
     setCurrentPage(1);
   }, [filteredAddresses]);
 
   return (
     <AddressContext.Provider
       value={{
+        addAddress,
         addresses,
         paginatedAddresses,
         filteredAddresses,

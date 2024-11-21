@@ -14,6 +14,7 @@ import HelpContent from "./pages/HelpContent";
 import AboutContent from "./pages/AboutContent";
 import { AddressProvider } from "./context/AddressContext";
 import { SidebarProvider } from "./context/SidebarContext";
+import { Toaster } from "react-hot-toast";
 
 const Layout = ({ children }) => {
   return (
@@ -21,7 +22,26 @@ const Layout = ({ children }) => {
       <Sidebar />
       <main className="flex-1 overflow-y-auto bg-gray-50">
         <Navbar />
-        <div className="p-6">{children}</div>
+        <div className="p-6">
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              success: {
+                style: {
+                  background: "#10B981", // Tailwind's green-500
+                  color: "white",
+                },
+              },
+              error: {
+                style: {
+                  background: "#EF4444", // Tailwind's red-500
+                  color: "white",
+                },
+              },
+            }}
+          />
+          {children}
+        </div>
       </main>
     </div>
   );
