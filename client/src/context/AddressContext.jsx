@@ -184,7 +184,7 @@ export const AddressProvider = ({ children }) => {
 
       // Refresh the data
       const updatedAddresses = await fetch(
-        "http://localhost:3000/api/addresses",
+        "https://py-software-backend.vercel.app/api/addresses",
         {
           headers: { "X-API-KEY": import.meta.env.VITE_API_KEY },
         }
@@ -264,7 +264,7 @@ export const AddressProvider = ({ children }) => {
 
       // Refresh the data
       const updatedAddresses = await fetch(
-        "http://localhost:3000/api/addresses",
+        "https://py-software-backend.vercel.app/api/addresses",
         {
           headers: { "X-API-KEY": import.meta.env.VITE_API_KEY },
         }
