@@ -14,10 +14,7 @@ export const MenuProvider = ({ children }) => {
         const response = await fetch(
           "https://py-software-backend.vercel.app/api/menu",
           {
-            headers: {
-              "Content-Type": "application/json",
-              "x-api-key": import.meta.env.VITE_API_KEY, // Make sure to create a .env file with this
-            },
+            headers: { "Content-Type": "application/json" }, // No x-api-key
             credentials: "include",
           }
         );
