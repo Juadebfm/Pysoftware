@@ -43,7 +43,7 @@ const AddAddressModal = ({ isOpen, onClose, onSubmit }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-7 md:px-0">
-      <div className="bg-white p-8 rounded-lg w-full w-auto">
+      <div className="bg-white p-8 rounded-lg max-w-1/2 mx-auto">
         <h2 className="text-2xl font-bold mb-6">Add New Address</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
