@@ -32,10 +32,6 @@ app.use(bodyParser.json());
 
 app.use("/api", validateApiKey);
 
-// Routes
-app.use("/api/addresses", addressRoutes);
-app.use("/api", menuRoutes);
-
 const PORT = process.env.PORT || 3000;
 
 // Database Configuration
