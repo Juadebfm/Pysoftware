@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://py-software-frontend.vercel.app",
+    origin: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "x-api-key"],
     credentials: true,
