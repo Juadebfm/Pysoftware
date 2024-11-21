@@ -47,18 +47,18 @@ export const AddressProvider = ({ children }) => {
     const fetchAddresses = async () => {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:3000/api/addresses", {
-          headers: {
-            "X-API-KEY": import.meta.env.VITE_API_KEY,
-          },
-        });
+        const response = await fetch(
+          "https://py-software-backend.vercel.app/api/addresses",
+          {
+            headers: {
+              "X-API-KEY": import.meta.env.VITE_API_KEY,
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
         const responseData = await response.json();
-
-        console.log("Full API Response:", responseData);
-        console.log("Addresses from API:", responseData.data);
 
         // Specifically set addresses to the data array
         const fetchedAddresses = responseData.data || [];
@@ -78,14 +78,10 @@ export const AddressProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Filtered Addresses:", filteredAddresses);
-
     const startIndex = (currentPage - 1) * recordsPerPage;
     const endIndex = startIndex + recordsPerPage;
 
     const paginated = filteredAddresses.slice(startIndex, endIndex);
-
-    console.log("Paginated Addresses:", paginated);
 
     setPaginatedAddresses(paginated);
   }, [filteredAddresses, currentPage, recordsPerPage]);
@@ -166,7 +162,7 @@ export const AddressProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/addresses/${userId}`,
+        `https://py-software-backend.vercel.app/api/addresses/${userId}`,
         {
           method: "PUT",
           headers: {
@@ -206,7 +202,7 @@ export const AddressProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/addresses/${userId}`,
+        `https://py-software-backend.vercel.app/api/addresses/${userId}`,
         {
           method: "DELETE",
           headers: { "X-API-KEY": import.meta.env.VITE_API_KEY },
@@ -242,14 +238,17 @@ export const AddressProvider = ({ children }) => {
   const addAddress = async (newAddressData) => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/addresses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": import.meta.env.VITE_API_KEY,
-        },
-        body: JSON.stringify(newAddressData),
-      });
+      const response = await fetch(
+        "https://py-software-backend.vercel.app/api/addresses",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": import.meta.env.VITE_API_KEY,
+          },
+          body: JSON.stringify(newAddressData),
+        }
+      );
 
       const responseData = await response.json();
 
